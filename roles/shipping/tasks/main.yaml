@@ -8,35 +8,19 @@
     name: common
     tasks_from: maven
 
-# - name: import data
-#   community.mysql.mysql_db:
-#     name: all
-#     login_user: "{{ MYSQL_ROOT_USER }}"
-#     login_password: "{{ MYSQL_ROOT_PASSWORD }}"
-#     login_host: "{{ MYSQL_HOST }}"
-#     state: import
-#     target: "{{ item }}"
-#   loop:
-#   - /app/db/schema.sql
-#   - /app/db/app-user.sql
-#   - /app/db/master-data.sql
-
-
 - name: import data
-  mysql_db:
-    name: "{{ database_name }}"
+  community.mysql.mysql_db:
+    name: all
+    login_user: "{{ MYSQL_ROOT_USER }}"
+    login_password: "{{ MYSQL_ROOT_PASSWORD }}"
+    login_host: "{{ MYSQL_HOST }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
     state: import
     target: "{{ item }}"
-    login_user: root
-    login_password: "{{ MYSQL_ROOT_PASSWORD }}"
-    login_host: localhost
-    login_unix_socket: /var/run/mysqld/mysqld.sock
   loop:
-    - /app/db/schema.sql
-    - /app/db/app-user.sql
-    - /app/db/master-data.sql
-  # ignore_errors: yes  # ✅ This is correct - at task level
-
+  - /app/db/schema.sql
+  - /app/db/app-user.sql
+  - /app/db/master-data.sql
 
 - name: systemd setup
   include_role:
