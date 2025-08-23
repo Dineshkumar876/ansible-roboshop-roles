@@ -22,7 +22,7 @@
 #   - /app/db/master-data.sql
 
 
-- name: Import SQL files
+- name: import data
   mysql_db:
     name: "{{ database_name }}"
     state: import
