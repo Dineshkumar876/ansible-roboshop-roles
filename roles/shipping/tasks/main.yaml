@@ -8,18 +8,54 @@
     name: common
     tasks_from: maven
 
-- name: import data
-  community.mysql.mysql_db:
-    name: all
-    login_user: "{{ MYSQL_ROOT_USER }}"
-    login_password: "{{ MYSQL_ROOT_PASSWORD }}"
-    login_host: "{{ MYSQL_HOST }}"
+# - name: import data
+#   community.mysql.mysql_db:
+#     name: all
+#     login_user: "{{ MYSQL_ROOT_USER }}"
+#     login_password: "{{ MYSQL_ROOT_PASSWORD }}"
+#     login_host: "{{ MYSQL_HOST }}"
+#     state: import
+#     target: "{{ item }}"
+#   loop:
+#   - /app/db/schema.sql
+#   - /app/db/app-user.sql
+#   - /app/db/master-data.sql
+
+- name: Import SQL files
+  mysql_db:
+    name: "{{ database_name }}"
     state: import
     target: "{{ item }}"
+    login_user: root
+    login_password: "{{ MYSQL_ROOT_PASSWORD }}"
+    login_host: "{{ MYSQL_HOST }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock  # Add this line
   loop:
-  - /app/db/schema.sql
-  - /app/db/app-user.sql
-  - /app/db/master-data.sql
+    - /app/db/schema.sql
+    - /app/db/app-user.sql
+    - /app/db/master-data.sql
+
+
+    
+- name: Execute SQL files
+  shell: |
+    mysql -u root -p"{{ MYSQL_ROOT_PASSWORD }}" -h "{{ MYSQL_HOST }}" < {{ item }}
+  loop:
+    - /app/db/schema.sql
+    - /app/db/app-user.sql
+    - /app/db/master-data.sql
+  no_log: true
+  become: yes
+
+- name: Test MySQL connection
+  shell: mysql -u root -p"{{ MYSQL_ROOT_PASSWORD }}" -e "SELECT 1;"
+  register: mysql_test
+  ignore_errors: yes
+
+- debug:
+    var: mysql_test
+
+
 
 
 
@@ -27,3 +63,6 @@
   include_role:
     name: common
     tasks_from: systemd
+
+    
+  
