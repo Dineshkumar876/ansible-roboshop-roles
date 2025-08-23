@@ -29,7 +29,7 @@
     target: "{{ item }}"
     login_user: root
     login_password: RoboShop@1
-    login_host: mysql.vasadinesh.site
+    login_host: localhost
   loop:
     - /app/db/schema.sql
     - /app/db/app-user.sql
