@@ -21,7 +21,7 @@
 #   - /app/db/app-user.sql
 #   - /app/db/master-data.sql
 
-- name: Load schema into MySQL
+- name: import data
   community.mysql.mysql_db:
     name: all
     state: import
