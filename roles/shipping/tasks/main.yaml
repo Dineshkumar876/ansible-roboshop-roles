@@ -21,6 +21,7 @@
   - /app/db/schema.sql
   - /app/db/app-user.sql
   - /app/db/master-data.sql
+  ignore_errors: true
 
 - name: systemd setup
   include_role:
